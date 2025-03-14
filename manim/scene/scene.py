@@ -899,9 +899,10 @@ class Scene:
         Tuple[:class:`Animation`]
             Animations to be played.
         """
+        # Allow passing a generator or any iterable (without unpacking it first) to self.play
+        # instead of comma separated arguments
         animations = []
         arg_anims = flatten_iterable_parameters(args)
-        # Allow passing a generator to self.play instead of comma separated arguments
         for arg in arg_anims:
             try:
                 animations.append(prepare_animation(arg))
