@@ -27,7 +27,6 @@ from ..utils.color import ManimColor, ParsableManimColor, color_to_int_rgba
 from ..utils.family import extract_mobject_family_members
 from ..utils.images import get_full_raster_image_path
 from ..utils.iterables import list_difference_update
-from ..utils.space_ops import angle_of_vector
 
 LINE_JOIN_MAP = {
     LineJointType.AUTO: None,  # TODO: this could be improved
@@ -990,11 +989,15 @@ class Camera:
         )
 
         # Rotate
-        angle = angle_of_vector(right_vect)
-        adjusted_angle = -int(360 * angle / TAU)
-        if adjusted_angle != 0:
+        basis = np.column_stack((right_vect[:2], down_vect[:2]))
+        if np.linalg.det(basis) < 0:
+            sub_image = sub_image.transpose(Image.FLIP_TOP_BOTTOM)
+
+        angle = np.arctan2(right_vect[1], right_vect[0])
+        angle_degrees = -np.degrees(angle)
+        if abs(angle_degrees) > 1e-2:
             sub_image = sub_image.rotate(
-                adjusted_angle,
+                angle_degrees,
                 resample=image_mobject.resampling_algorithm,
                 expand=1,
             )
