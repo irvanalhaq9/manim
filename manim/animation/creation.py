@@ -128,6 +128,7 @@ class ShowPartial(Animation):
         submobject: Mobject,
         starting_submobject: Mobject,
         alpha: float,
+        scene: Scene | None = None,
     ) -> None:
         submobject.pointwise_become_partial(
             starting_submobject, *self._get_bounds(alpha)
@@ -475,7 +476,7 @@ class SpiralIn(Animation):
 
         super().__init__(shapes, introducer=True, **kwargs)
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         alpha = self.rate_func(alpha)
         for original_shape, shape in zip(self.shapes, self.mobject):
             shape.restore()
@@ -529,7 +530,7 @@ class ShowIncreasingSubsets(Animation):
             **kwargs,
         )
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         n_submobs = len(self.all_submobs)
         value = (
             1 - self.rate_func(alpha)
@@ -746,7 +747,7 @@ class TypeWithCursor(AddTextLetterByLetter):
             **kwargs,
         )
 
-    def begin(self) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         self.y_cursor = self.cursor.get_y()
         self.cursor.initial_position = self.mobject.get_center()
         if self.keep_cursor_y:
@@ -756,7 +757,7 @@ class TypeWithCursor(AddTextLetterByLetter):
         self.mobject.add(self.cursor)
         super().begin()
 
-    def finish(self) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         if self.leave_cursor_on:
             self.cursor.set_opacity(1)
         else:

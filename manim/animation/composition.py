@@ -81,7 +81,7 @@ class AnimationGroup(Animation):
     def get_all_mobjects(self) -> Sequence[Mobject]:
         return list(self.group)
 
-    def begin(self) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         if not self.animations:
             raise ValueError(
                 f"Trying to play {self} without animations, this is not supported. "
@@ -97,7 +97,7 @@ class AnimationGroup(Animation):
         for anim in self.animations:
             anim._setup_scene(scene)
 
-    def finish(self) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         for anim in self.animations:
             anim.finish()
         self.anims_begun[:] = True
@@ -157,7 +157,7 @@ class AnimationGroup(Animation):
         self.anims_with_timings["start"][1:] = np.add.accumulate(lags)
         self.anims_with_timings["end"] = self.anims_with_timings["start"] + run_times
 
-    def interpolate(self, alpha: float) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         # Note, if the run_time of AnimationGroup has been
         # set to something other than its default, these
         # times might not correspond to actual times,
@@ -231,7 +231,7 @@ class Succession(AnimationGroup):
     def __init__(self, *animations: Animation, lag_ratio: float = 1, **kwargs) -> None:
         super().__init__(*animations, lag_ratio=lag_ratio, **kwargs)
 
-    def begin(self) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         if not self.animations:
             raise ValueError(
                 f"Trying to play {self} without animations, this is not supported. "
@@ -239,7 +239,7 @@ class Succession(AnimationGroup):
             )
         self.update_active_animation(0)
 
-    def finish(self) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         while self.active_animation is not None:
             self.next_animation()
 
@@ -279,7 +279,7 @@ class Succession(AnimationGroup):
             self.active_animation.finish()
         self.update_active_animation(self.active_index + 1)
 
-    def interpolate(self, alpha: float) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         current_time = self.rate_func(alpha) * self.max_end_time
         while self.active_end_time is not None and current_time >= self.active_end_time:
             self.next_animation()

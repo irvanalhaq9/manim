@@ -12,6 +12,7 @@ from manim.animation.animation import Animation
 
 if typing.TYPE_CHECKING:
     from manim.mobject.mobject import Mobject
+    from manim.scene.scene import Scene
 
 
 class UpdateFromFunc(Animation):
@@ -33,12 +34,12 @@ class UpdateFromFunc(Animation):
             mobject, suspend_mobject_updating=suspend_mobject_updating, **kwargs
         )
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         self.update_function(self.mobject)
 
 
 class UpdateFromAlphaFunc(UpdateFromFunc):
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         self.update_function(self.mobject, self.rate_func(alpha))
 
 
@@ -51,7 +52,7 @@ class MaintainPositionRelativeTo(Animation):
         )
         super().__init__(mobject, **kwargs)
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         target = self.tracked_mobject.get_center()
         location = self.mobject.get_center()
         self.mobject.shift(target - location + self.diff)
