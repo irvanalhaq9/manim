@@ -1257,7 +1257,7 @@ class Scene:
         """Start the animations of the scene."""
         for animation in self.animations:
             animation._setup_scene(self)
-            animation.begin()
+            animation.begin(self)
 
         if config.renderer == RendererType.CAIRO:
             # Paint all non-moving objects onto the screen, so they don't
@@ -1300,7 +1300,7 @@ class Scene:
                 break
 
         for animation in self.animations:
-            animation.finish()
+            animation.finish(self)
             animation.clean_up_from_scene(self)
         if not self.renderer.skip_animations:
             self.update_mobjects(0)
@@ -1531,7 +1531,7 @@ class Scene:
         for animation in self.animations:
             animation.update_mobjects(dt)
             alpha = t / animation.run_time
-            animation.interpolate(alpha)
+            animation.interpolate(alpha, self)
         self.update_mobjects(dt)
         self.update_meshes(dt)
         self.update_self(dt)

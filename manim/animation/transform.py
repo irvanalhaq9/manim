@@ -52,7 +52,6 @@ from ..utils.rate_functions import smooth, squish_rate_func
 
 if TYPE_CHECKING:
     from ..scene.scene import Scene
-    from ..scene.three_d_scene import ThreeDScene
 
 
 class Transform(Animation):
@@ -193,7 +192,7 @@ class Transform(Animation):
         if path_func is not None:
             self._path_func = path_func
 
-    def begin(self, scene: ThreeDScene | None = None) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         # Use a copy of target_mobject for the align_data
         # call so that the actual target_mobject stays
         # preserved.
@@ -241,7 +240,7 @@ class Transform(Animation):
         starting_submobject: Mobject,
         target_copy: Mobject,
         alpha: float,
-        scene: ThreeDScene | None = None,
+        scene: Scene | None = None,
     ) -> Transform:
         submobject.interpolate(starting_submobject, target_copy, alpha, self.path_func)
         return self
@@ -941,7 +940,7 @@ class FixInFrameTransform(Transform):
         starting_submobject: Mobject,
         target_copy: Mobject,
         alpha: float,
-        scene: ThreeDScene | None = None,
+        scene: Scene | None = None,
     ) -> Transform:
         sub = submobject.interpolate(
             starting_submobject, target_copy, alpha, self.path_func

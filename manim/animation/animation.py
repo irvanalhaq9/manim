@@ -24,9 +24,6 @@ from typing_extensions import Self
 if TYPE_CHECKING:
     from manim.scene.scene import Scene
 
-    from ..scene.three_d_scene import ThreeDScene
-
-
 DEFAULT_ANIMATION_RUN_TIME: float = 1.0
 DEFAULT_ANIMATION_LAG_RATIO: float = 0.0
 
@@ -201,7 +198,7 @@ class Animation:
     def __repr__(self) -> str:
         return str(self)
 
-    def begin(self, scene: ThreeDScene | None = None) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         """Begin the animation.
 
         This method is called right as an animation is being played. As much
@@ -220,7 +217,7 @@ class Animation:
             self.mobject.suspend_updating()
         self.interpolate(0, scene)
 
-    def finish(self, scene: ThreeDScene | None = None) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         # TODO: begin and finish should require a scene as parameter.
         # That way Animation.clean_up_from_screen and Scene.add_mobjects_from_animations
         # could be removed as they fulfill basically the same purpose.
@@ -327,7 +324,7 @@ class Animation:
     # Methods for interpolation, the mean of an Animation
 
     # TODO: stop using alpha as parameter name in different meanings.
-    def interpolate(self, alpha: float, scene: ThreeDScene | None = None) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         """Set the animation progress.
 
         This method gets called for every frame during an animation.
@@ -340,9 +337,7 @@ class Animation:
         """
         self.interpolate_mobject(alpha, scene)
 
-    def interpolate_mobject(
-        self, alpha: float, scene: ThreeDScene | None = None
-    ) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         """Interpolates the mobject of the :class:`Animation` based on alpha value.
 
         Parameters
@@ -363,7 +358,7 @@ class Animation:
         starting_submobject: Mobject,
         # target_copy: Mobject, #Todo: fix - signature of interpolate_submobject differs in Transform().
         alpha: float,
-        scene: ThreeDScene | None = None,
+        scene: Scene | None = None,
     ) -> Animation:
         # Typically implemented by subclass
         pass
@@ -627,10 +622,10 @@ class Wait(Animation):
         # quick fix to work in opengl setting:
         self.mobject.shader_wrapper_list = []
 
-    def begin(self, scene: ThreeDScene | None = None) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         pass
 
-    def finish(self, scene: ThreeDScene | None = None) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         pass
 
     def clean_up_from_scene(self, scene: Scene) -> None:
@@ -639,7 +634,7 @@ class Wait(Animation):
     def update_mobjects(self, dt: float) -> None:
         pass
 
-    def interpolate(self, alpha: float, scene: ThreeDScene | None = None) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         pass
 
 

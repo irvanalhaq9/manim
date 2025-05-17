@@ -85,8 +85,6 @@ if TYPE_CHECKING:
     from manim.mobject.text.text_mobject import Text
     from manim.scene.scene import Scene
 
-    from ..scene.three_d_scene import ThreeDScene
-
 from manim.constants import RIGHT, TAU
 from manim.mobject.opengl.opengl_surface import OpenGLSurface
 from manim.mobject.opengl.opengl_vectorized_mobject import OpenGLVMobject
@@ -256,7 +254,7 @@ class DrawBorderThenFill(Animation):
                 f"{self.__class__.__name__} only works for vectorized Mobjects"
             )
 
-    def begin(self, scene: ThreeDScene | None = None) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         self.outline = self.get_outline()
         super().begin()
 
@@ -283,7 +281,7 @@ class DrawBorderThenFill(Animation):
         starting_submobject: Mobject,
         outline,
         alpha: float,
-        scene: ThreeDScene | None = None,
+        scene: Scene | None = None,
     ) -> None:  # Fixme: not matching the parent class? What is outline doing here?
         index: int
         subalpha: float
@@ -364,12 +362,12 @@ class Write(DrawBorderThenFill):
     def reverse_submobjects(self) -> None:
         self.mobject.invert(recursive=True)
 
-    def begin(self, scene: ThreeDScene | None = None) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         if self.reverse:
             self.reverse_submobjects()
         super().begin()
 
-    def finish(self, scene: ThreeDScene | None = None) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         super().finish()
         if self.reverse:
             self.reverse_submobjects()

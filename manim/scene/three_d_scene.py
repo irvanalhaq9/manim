@@ -433,56 +433,6 @@ class ThreeDScene(Scene):
         config.update(kwargs)
         self.set_camera_orientation(**config)
 
-    def begin_animations(self) -> None:
-        """Start the animations of the scene."""
-        for animation in self.animations:
-            animation._setup_scene(self)
-            animation.begin(self)
-
-    def play_internal(self, skip_rendering: bool = False):
-        """
-        This method is used to prep the animations for rendering,
-        apply the arguments and parameters required to them,
-        render them, and write them to the video file.
-
-        Parameters
-        ----------
-        skip_rendering
-            Whether the rendering should be skipped, by default False
-        """
-        self.duration = self.get_run_time(self.animations)
-        self.time_progression = self._get_animation_time_progression(
-            self.animations,
-            self.duration,
-        )
-        for t in self.time_progression:
-            self.update_to_time(t)
-            if not skip_rendering and not self.skip_animation_preview:
-                self.renderer.render(self, t, self.moving_mobjects)
-            if self.stop_condition is not None and self.stop_condition():
-                self.time_progression.close()
-                break
-
-        for animation in self.animations:
-            animation.finish(self)
-            animation.clean_up_from_scene(self)
-        if not self.renderer.skip_animations:
-            self.update_mobjects(0)
-        self.renderer.static_image = None
-        # Closing the progress bar at the end of the play.
-        self.time_progression.close()
-
-    def update_to_time(self, t):
-        dt = t - self.last_t
-        self.last_t = t
-        for animation in self.animations:
-            animation.update_mobjects(dt)
-            alpha = t / animation.run_time
-            animation.interpolate(alpha, self)
-        self.update_mobjects(dt)
-        self.update_meshes(dt)
-        self.update_self(dt)
-
 
 class SpecialThreeDScene(ThreeDScene):
     """An extension of :class:`ThreeDScene` with more settings.
