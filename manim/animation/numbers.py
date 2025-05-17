@@ -5,19 +5,22 @@ from __future__ import annotations
 __all__ = ["ChangingDecimal", "ChangeDecimalToValue"]
 
 
-import typing
+from typing import TYPE_CHECKING, Callable
 
 from manim.mobject.text.numbers import DecimalNumber
 
 from ..animation.animation import Animation
 from ..utils.bezier import interpolate
 
+if TYPE_CHECKING:
+    from manim.scene.scene import Scene
+
 
 class ChangingDecimal(Animation):
     def __init__(
         self,
         decimal_mob: DecimalNumber,
-        number_update_func: typing.Callable[[float], float],
+        number_update_func: Callable[[float], float],
         suspend_mobject_updating: bool | None = False,
         **kwargs,
     ) -> None:
@@ -31,7 +34,7 @@ class ChangingDecimal(Animation):
         if not isinstance(decimal_mob, DecimalNumber):
             raise TypeError("ChangingDecimal can only take in a DecimalNumber")
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         self.mobject.set_value(self.number_update_func(self.rate_func(alpha)))
 
 

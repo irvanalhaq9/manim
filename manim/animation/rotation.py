@@ -15,6 +15,8 @@ from ..constants import OUT, PI, TAU
 from ..utils.rate_functions import linear
 
 if TYPE_CHECKING:
+    from manim.scene.scene import Scene
+
     from ..mobject.mobject import Mobject
 
 
@@ -36,7 +38,7 @@ class Rotating(Animation):
         self.about_edge = about_edge
         super().__init__(mobject, run_time=run_time, rate_func=rate_func, **kwargs)
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         self.mobject.become(self.starting_mobject)
         self.mobject.rotate(
             self.rate_func(alpha) * self.radians,

@@ -306,7 +306,7 @@ class TransformFromCopy(Transform):
     def __init__(self, mobject: Mobject, target_mobject: Mobject, **kwargs) -> None:
         super().__init__(target_mobject, mobject, **kwargs)
 
-    def interpolate(self, alpha: float) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         super().interpolate(1 - alpha)
 
 
@@ -441,7 +441,7 @@ class _MethodAnimation(MoveToTarget):
         self.methods = methods
         super().__init__(mobject)
 
-    def finish(self) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         for method, method_args, method_kwargs in self.methods:
             method.__func__(self.mobject, *method_args, **method_kwargs)
         super().finish()
@@ -532,7 +532,7 @@ class ApplyPointwiseFunctionToCenter(ApplyPointwiseFunction):
         self.function = function
         super().__init__(mobject.move_to, **kwargs)
 
-    def begin(self) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         self.method_args = [self.function(self.mobject.get_center())]
         super().begin()
 
@@ -782,7 +782,7 @@ class TransformAnimations(Transform):
         start_anim.mobject = self.starting_mobject
         end_anim.mobject = self.target_mobject
 
-    def interpolate(self, alpha: float) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         self.start_anim.interpolate(alpha)
         self.end_anim.interpolate(alpha)
         super().interpolate(alpha)
@@ -843,7 +843,7 @@ class FadeTransform(Transform):
             group = Group(mobject, target_mobject.copy())
         super().__init__(group, **kwargs)
 
-    def begin(self):
+    def begin(self, scene: Scene | None = None):
         """Initial setup for the animation.
 
         The mobject to which this animation is bound is a group consisting of
@@ -918,7 +918,7 @@ class FadeTransformPieces(FadeTransform):
 
     """
 
-    def begin(self):
+    def begin(self, scene: Scene | None = None):
         self.mobject[0].align_submobjects(self.mobject[1])
         super().begin()
 
