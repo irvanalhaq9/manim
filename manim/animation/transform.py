@@ -24,6 +24,8 @@ __all__ = [
     "CyclicReplace",
     "Swap",
     "TransformAnimations",
+    "FixInFrameTransform",
+    "FixInFrameReplacementTransform",
 ]
 
 import inspect
@@ -50,6 +52,7 @@ from ..utils.rate_functions import smooth, squish_rate_func
 
 if TYPE_CHECKING:
     from ..scene.scene import Scene
+    from ..scene.three_d_scene import ThreeDScene
 
 
 class Transform(Animation):
@@ -190,7 +193,7 @@ class Transform(Animation):
         if path_func is not None:
             self._path_func = path_func
 
-    def begin(self) -> None:
+    def begin(self, scene: ThreeDScene | None = None) -> None:
         # Use a copy of target_mobject for the align_data
         # call so that the actual target_mobject stays
         # preserved.
@@ -202,7 +205,7 @@ class Transform(Animation):
             self.mobject.align_data_and_family(self.target_copy)
         else:
             self.mobject.align_data(self.target_copy)
-        super().begin()
+        super().begin(scene)
 
     def create_target(self) -> Mobject:
         # Has no meaningful effect here, but may be useful
@@ -238,6 +241,7 @@ class Transform(Animation):
         starting_submobject: Mobject,
         target_copy: Mobject,
         alpha: float,
+        scene: ThreeDScene | None = None,
     ) -> Transform:
         submobject.interpolate(starting_submobject, target_copy, alpha, self.path_func)
         return self
@@ -925,3 +929,29 @@ class FadeTransformPieces(FadeTransform):
         """
         for sm0, sm1 in zip(source.get_family(), target.get_family()):
             super().ghost_to(sm0, sm1)
+
+
+class FixInFrameTransform(Transform):
+    def __init__(self, mobject, target_mobject, **kwargs):
+        super().__init__(mobject, target_mobject, **kwargs)
+
+    def interpolate_submobject(
+        self,
+        submobject: Mobject,
+        starting_submobject: Mobject,
+        target_copy: Mobject,
+        alpha: float,
+        scene: ThreeDScene | None = None,
+    ) -> Transform:
+        sub = submobject.interpolate(
+            starting_submobject, target_copy, alpha, self.path_func
+        )
+        scene.camera.add_fixed_in_frame_mobjects(sub)
+        return self
+
+
+class FixInFrameReplacementTransform(FixInFrameTransform):
+    def __init__(self, mobject, target_mobject, **kwargs):
+        super().__init__(
+            mobject, target_mobject, replace_mobject_with_target_in_scene=True, **kwargs
+        )
