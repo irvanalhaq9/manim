@@ -949,7 +949,7 @@ class FixedInFrameTransform(Transform):
         return self
 
 
-class FixedInFrameReplacementTransform(FixInFrameTransform):
+class FixedInFrameReplacementTransform(FixedInFrameTransform):
     def __init__(self, mobject, target_mobject, **kwargs):
         super().__init__(
             mobject, target_mobject, replace_mobject_with_target_in_scene=True, **kwargs
