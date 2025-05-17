@@ -24,8 +24,8 @@ __all__ = [
     "CyclicReplace",
     "Swap",
     "TransformAnimations",
-    "FixInFrameTransform",
-    "FixInFrameReplacementTransform",
+    "FixedInFrameTransform",
+    "FixedInFrameReplacementTransform",
 ]
 
 import inspect
@@ -930,7 +930,7 @@ class FadeTransformPieces(FadeTransform):
             super().ghost_to(sm0, sm1)
 
 
-class FixInFrameTransform(Transform):
+class FixedInFrameTransform(Transform):
     def __init__(self, mobject, target_mobject, **kwargs):
         super().__init__(mobject, target_mobject, **kwargs)
 
@@ -949,7 +949,7 @@ class FixInFrameTransform(Transform):
         return self
 
 
-class FixInFrameReplacementTransform(FixInFrameTransform):
+class FixedInFrameReplacementTransform(FixInFrameTransform):
     def __init__(self, mobject, target_mobject, **kwargs):
         super().__init__(
             mobject, target_mobject, replace_mobject_with_target_in_scene=True, **kwargs
