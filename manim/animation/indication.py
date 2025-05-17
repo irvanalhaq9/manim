@@ -538,6 +538,7 @@ class Wiggle(Animation):
         submobject: Mobject,
         starting_submobject: Mobject,
         alpha: float,
+        scene: Scene | None = None,
     ) -> None:
         submobject.points[:, :] = starting_submobject.points
         submobject.scale(

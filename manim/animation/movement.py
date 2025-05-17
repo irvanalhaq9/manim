@@ -18,6 +18,8 @@ from ..animation.animation import Animation
 from ..utils.rate_functions import linear
 
 if TYPE_CHECKING:
+    from manim.scene.scene import Scene
+
     from ..mobject.mobject import Mobject, VMobject
 
 
@@ -88,6 +90,7 @@ class Homotopy(Animation):
         submobject: Mobject,
         starting_submobject: Mobject,
         alpha: float,
+        scene: Scene | None = None,
     ) -> None:
         submobject.points = starting_submobject.points
         submobject.apply_function(
@@ -101,6 +104,7 @@ class SmoothedVectorizedHomotopy(Homotopy):
         submobject: Mobject,
         starting_submobject: Mobject,
         alpha: float,
+        scene: Scene | None = None,
     ) -> None:
         super().interpolate_submobject(submobject, starting_submobject, alpha)
         submobject.make_smooth()
@@ -143,7 +147,7 @@ class PhaseFlow(Animation):
             **kwargs,
         )
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         if hasattr(self, "last_alpha"):
             dt = self.virtual_time * (
                 self.rate_func(alpha) - self.rate_func(self.last_alpha)
@@ -179,6 +183,6 @@ class MoveAlongPath(Animation):
             mobject, suspend_mobject_updating=suspend_mobject_updating, **kwargs
         )
 
-    def interpolate_mobject(self, alpha: float) -> None:
+    def interpolate_mobject(self, alpha: float, scene: Scene | None = None) -> None:
         point = self.path.point_from_proportion(self.rate_func(alpha))
         self.mobject.move_to(point)

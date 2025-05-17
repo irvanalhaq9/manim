@@ -275,17 +275,17 @@ class ChangeSpeed(Animation):
         else:
             mobject.add_updater(update_function, index=index, call_updater=call_updater)
 
-    def interpolate(self, alpha: float) -> None:
+    def interpolate(self, alpha: float, scene: Scene | None = None) -> None:
         self.anim.interpolate(alpha)
 
     def update_mobjects(self, dt: float) -> None:
         self.anim.update_mobjects(dt)
 
-    def finish(self) -> None:
+    def finish(self, scene: Scene | None = None) -> None:
         ChangeSpeed.is_changing_dt = False
         self.anim.finish()
 
-    def begin(self) -> None:
+    def begin(self, scene: Scene | None = None) -> None:
         self.anim.begin()
 
     def clean_up_from_scene(self, scene: Scene) -> None:
