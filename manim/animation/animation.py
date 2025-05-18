@@ -359,7 +359,7 @@ class Animation:
         starting_submobject: Mobject,
         # target_copy: Mobject, #Todo: fix - signature of interpolate_submobject differs in Transform().
         alpha: float,
-    ) -> Animation:
+    ) -> None:
         # Typically implemented by subclass
         pass
 

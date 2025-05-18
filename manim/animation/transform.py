@@ -238,9 +238,8 @@ class Transform(Animation):
         starting_submobject: Mobject,
         target_copy: Mobject,
         alpha: float,
-    ) -> Transform:
+    ) -> None:
         submobject.interpolate(starting_submobject, target_copy, alpha, self.path_func)
-        return self
 
 
 class ReplacementTransform(Transform):
