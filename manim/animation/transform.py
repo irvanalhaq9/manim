@@ -941,12 +941,9 @@ class FixedInFrameTransform(Transform):
         target_copy: Mobject,
         alpha: float,
         scene: Scene | None = None,
-    ) -> Transform:
-        sub = submobject.interpolate(
-            starting_submobject, target_copy, alpha, self.path_func
-        )
-        scene.camera.add_fixed_in_frame_mobjects(sub)
-        return self
+    ) -> None:
+        submobject.interpolate(starting_submobject, target_copy, alpha, self.path_func)
+        scene.camera.add_fixed_in_frame_mobjects(submobject)
 
 
 class FixedInFrameReplacementTransform(FixedInFrameTransform):
