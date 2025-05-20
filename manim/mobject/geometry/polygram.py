@@ -14,6 +14,7 @@ __all__ = [
     "RoundedRectangle",
     "Cutout",
     "ConvexHull",
+    "MultiPath",
 ]
 
 
@@ -46,7 +47,82 @@ if TYPE_CHECKING:
     from manim.utils.color import ParsableManimColor
 
 
-class Polygram(VMobject, metaclass=ConvertToOpenGL):
+class MultiPath(VMobject, metaclass=ConvertToOpenGL):
+    """A generalized path-based VMobject allowing multiple open or closed subpaths.
+
+    Parameters
+    ----------
+    vertex_groups
+        The groups of vertices.
+    closed
+        If True, each subpath will be closed by connecting the last point to the first.
+    kwargs
+        Additional keyword arguments passed to VMobject.
+
+    Examples
+    --------
+    .. manim:: MultiPathExample
+
+        class MultiPathExample(Scene):
+            def construct(self):
+                trapezium = [
+                    [-2, 1, 0],
+                    [2, 1, 0],
+                    [1, 3, 0],
+                    [-1, 3, 0],
+                    [-2, 1, 0],
+                ]
+
+                line = [
+                    [-3, 0, 0],
+                    [3, 0, 0],
+                ]
+
+                shape = MultiPath(trapezium,line)
+                self.play(Create(shape))
+                self.wait()
+    """
+
+    def __init__(
+        self,
+        *vertex_groups: Point3DLike_Array,
+        closed: bool = False,
+        **kwargs: Any,
+    ):
+        super().__init__(**kwargs)
+
+        for vertices in vertex_groups:
+            first_vertex, *rest_vertices = vertices
+            first_vertex = np.array(first_vertex)
+            self.start_new_path(first_vertex)
+            path_vertices = [*map(np.array, rest_vertices)]
+            if closed:
+                path_vertices.append(first_vertex)
+            self.add_points_as_corners(path_vertices)
+
+    def get_vertices(self) -> Point3D_Array:
+        """Gets the vertices of the :class:`Polygram`.
+
+        Returns
+        -------
+        :class:`numpy.ndarray`
+            The vertices of the :class:`Polygram`.
+
+        Examples
+        --------
+        ::
+
+            >>> sq = Square()
+            >>> sq.get_vertices()
+            array([[ 1.,  1.,  0.],
+                   [-1.,  1.,  0.],
+                   [-1., -1.,  0.],
+                   [ 1., -1.,  0.]])
+        """
+        return self.get_start_anchors()
+
+
+class Polygram(MultiPath):
     """A generalized :class:`Polygon`, allowing for disconnected sets of edges.
 
     Parameters
@@ -87,39 +163,7 @@ class Polygram(VMobject, metaclass=ConvertToOpenGL):
         color: ParsableManimColor = BLUE,
         **kwargs: Any,
     ):
-        super().__init__(color=color, **kwargs)
-
-        for vertices in vertex_groups:
-            # The inferred type for *vertices is Any, but it should be
-            # Point3D_Array
-            first_vertex, *vertices = vertices
-            first_vertex = np.array(first_vertex)
-
-            self.start_new_path(first_vertex)
-            self.add_points_as_corners(
-                [*(np.array(vertex) for vertex in vertices), first_vertex],
-            )
-
-    def get_vertices(self) -> Point3D_Array:
-        """Gets the vertices of the :class:`Polygram`.
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            The vertices of the :class:`Polygram`.
-
-        Examples
-        --------
-        ::
-
-            >>> sq = Square()
-            >>> sq.get_vertices()
-            array([[ 1.,  1.,  0.],
-                   [-1.,  1.,  0.],
-                   [-1., -1.,  0.],
-                   [ 1., -1.,  0.]])
-        """
-        return self.get_start_anchors()
+        super().__init__(*vertex_groups, closed=True, color=color, **kwargs)
 
     def get_vertex_groups(self) -> list[Point3D_Array]:
         """Gets the vertex groups of the :class:`Polygram`.
