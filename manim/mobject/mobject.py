@@ -501,7 +501,7 @@ class Mobject:
             [child]
 
         """
-        mobjects = flatten_iterable_to_mobjects(mobjects)
+        mobjects = flatten_iterable_to_mobjects_list(mobjects)
         self._assert_valid_submobjects(mobjects)
         unique_mobjects = remove_list_redundancies(mobjects)
         if len(mobjects) != len(unique_mobjects):
@@ -3194,7 +3194,7 @@ def override_animate(method) -> types.FunctionType:
     return decorator
 
 
-def flatten_iterable_to_mobjects(
+def flatten_iterable_to_mobjects_list(
     args: Iterable[Mobject | Iterable[Mobject] | types.GeneratorType],
 ) -> list[Mobject]:
     """Flattens an iterable of mobjects into a list of mobjects.
