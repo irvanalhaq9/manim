@@ -501,6 +501,7 @@ class Mobject:
             [child]
 
         """
+        mobjects = flatten_iterable_to_mobjects(mobjects)
         self._assert_valid_submobjects(mobjects)
         unique_mobjects = remove_list_redundancies(mobjects)
         if len(mobjects) != len(unique_mobjects):
@@ -3191,3 +3192,29 @@ def override_animate(method) -> types.FunctionType:
         return animation_method
 
     return decorator
+
+
+def flatten_iterable_to_mobjects(
+    args: Iterable[Mobject | Iterable[Mobject] | types.GeneratorType],
+) -> list[Mobject]:
+    """Flattens an iterable of mobjects into a list of mobjects.
+
+    Parameters
+    ----------
+    args
+        The iterable of mobjects to flatten.
+        [(generator), [], (), ...]
+
+    Returns
+    -------
+    :class:`list`
+        The flattened list of mobjects.
+    """
+    mobjects_list: list[Mobject] = []
+    for arg in args:
+        if isinstance(arg, Mobject):
+            mobjects_list.append(arg)
+        elif isinstance(arg, (Iterable, types.GeneratorType)):
+            mobjects_list.extend(arg)
+
+    return mobjects_list

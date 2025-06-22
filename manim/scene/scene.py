@@ -33,7 +33,7 @@ from tqdm import tqdm
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from manim.mobject.mobject import Mobject
+from manim.mobject.mobject import Mobject, flatten_iterable_to_mobjects
 from manim.mobject.opengl.opengl_mobject import OpenGLPoint
 
 from .. import config, logger
@@ -464,6 +464,7 @@ class Scene:
             The same scene after adding the Mobjects in.
 
         """
+        mobjects = flatten_iterable_to_mobjects(mobjects)
         if config.renderer == RendererType.OPENGL:
             new_mobjects = []
             new_meshes = []
